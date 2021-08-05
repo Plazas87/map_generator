@@ -1,5 +1,5 @@
 #!usr/bin/env python
-from typing import Tuple
+from typing import Tuple, List
 
 import pandas as pd
 import vincent
@@ -61,8 +61,6 @@ class Plotter:
 
     def _initialize_map(self) -> "Map":
         """Initializes an empty map with Madrid Central's regions on it"""
-        print(self.zoom)
-        print(self.location)
         m = Map(
             location=self.location,
             tiles='OpenStreetMap',
@@ -122,20 +120,23 @@ class Plotter:
             except Exception as e:
                 print(e)
 
-    def add_traffic_station_marker(self, locations, station_names=None, legend=None, **kwargs):
-        """Agrega al mapa el tantas estaciones de calidad del aire como ubicaciones existan dentro del parametro
+    def add_traffic_station_marker(self, locations, station_names: List[List[int]], legend=None, **kwargs):
+        """Agrega al mapa tantas estaciones de calidad del aire como ubicaciones existan dentro del parametro
         locations"""
         if station_names is None:
             station_names = [[i] for i in range(len(locations))]
 
         for location, stat_name in zip(locations, station_names):
             try:
-                CircleMarker(location=location,
-                                    tooltip=Tooltip(
-                                        f'Estación: {stat_name[0]}<br>Latitud: {round(location[0], 4)}<br>Longitud: {round(location[1], 4)}'),
-                                    popup=legend,
-                                    radius=2,
-                                    color='red').add_to(self._map)
+                CircleMarker(
+                    location=tuple(location),
+                    tooltip=Tooltip(
+                        f'Estación: {stat_name[0]}<br>Latitud: {round(location[0], 4)}<br>Longitud: {round(location[1], 4)}'
+                    ),
+                    popup=legend,
+                    radius=2,
+                    color='red'
+                ).add_to(self._map)
 
             except TypeError as e:
                 print("El parametro location debe ser un de la forma [lat, lon] ó (lat,lon)")
@@ -150,7 +151,7 @@ class Plotter:
                 print(e)
 
     def add_air_station_marker_with_graph(self, data, *args, **kwargs):
-        """Esta función se encarga de agregar graficos al los marcadores existentes"""
+        """Esta función se encarga de agregar graficos a los marcadores existentes"""
         locations = data.iloc[:, [1, 2]]
         station_names = data.iloc[:, [3]]
 
