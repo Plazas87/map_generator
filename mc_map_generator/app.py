@@ -1,5 +1,9 @@
 from .mappers import Plotter
 from .readers import FileReader
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class Mapper:
@@ -23,7 +27,9 @@ class Mapper:
         self.plotter.generate_map(self.output_file_name)
 
     def generate_standard_map(self) -> None:
+        logger.info("Loading the data...")
         self.file_reader.load_csv_file(self.file_name)
+        logger.info("Data successfully loaded.")
         station_list = self.file_reader.data
         locations = station_list.iloc[:, [4, 5]].values
         station_name = station_list.iloc[:, [0]].values
