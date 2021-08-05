@@ -1,10 +1,14 @@
 #!usr/bin/env python
-from typing import Tuple, List
+import logging
+from typing import Tuple, List, Optional
 
 import pandas as pd
 import vincent
 from folium.plugins import MeasureControl, HeatMap, TimestampedGeoJson
 from folium import Map, GeoJson, Popup, Marker, Tooltip, CustomIcon, CircleMarker, Vega, LayerControl
+
+
+logger = logging.getLogger(__name__)
 
 
 class Plotter:
@@ -120,35 +124,50 @@ class Plotter:
             except Exception as e:
                 print(e)
 
-    def add_traffic_station_marker(self, locations, station_names: List[List[int]], legend=None, **kwargs):
-        """Agrega al mapa tantas estaciones de calidad del aire como ubicaciones existan dentro del parametro
-        locations"""
+    def add_traffic_station_marker(
+        self,
+        locations: List[List[float, float]],
+        station_names: List[List[int]] = None,
+        legend: Optional[str] = None
+    ) -> None:
+        """
+        Create circle marker for each location.
+
+        Args:
+            locations: A list containing coordinates as list pairs [[lat1, lon1], [lat2, lon2], ...]
+            station_names: Name to be rendered for each location. Must be the same size as locations
+            legend: pending
+
+        Returns:
+            None
+        """
+
         if station_names is None:
-            station_names = [[i] for i in range(len(locations))]
+            station_names = ([i] for i in range(len(locations)))
 
         for location, stat_name in zip(locations, station_names):
             try:
+                tooltip_instance = Tooltip(
+                    f'Station: {stat_name[0]}<br>Lat: {round(location[0], 4)}<br>Lon: {round(location[1], 4)}'
+                )
+
                 CircleMarker(
                     location=tuple(location),
-                    tooltip=Tooltip(
-                        f'Estación: {stat_name[0]}<br>Latitud: {round(location[0], 4)}<br>Longitud: {round(location[1], 4)}'
-                    ),
+                    tooltip=tooltip_instance,
                     popup=legend,
                     radius=2,
                     color='red'
                 ).add_to(self._map)
 
             except TypeError as e:
-                print("El parametro location debe ser un de la forma [lat, lon] ó (lat,lon)")
-                print('Probando con la siguiente estación...')
+                logger.error("Location must be a tuple (lat, lon)")
+                logger.info("Location skipped. Continue with the next one.")
                 continue
 
-            except FileNotFoundError as e:
-                print('El archivo para representar las estaciones no se encuentra en la carpeta "icons"')
-                break
-
             except Exception as e:
-                print(e)
+                logger.error("Unknown error while creating the circle marker")
+                logger.info("Location skipped. Continue with the next one.")
+                continue
 
     def add_air_station_marker_with_graph(self, data, *args, **kwargs):
         """Esta función se encarga de agregar graficos a los marcadores existentes"""

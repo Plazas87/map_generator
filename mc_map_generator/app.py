@@ -27,13 +27,13 @@ class Mapper:
         self.plotter.generate_map(self.output_file_name)
 
     def generate_standard_map(self) -> None:
-        logger.info("Loading the data...")
+        logger.info("Loading data...")
         self.file_reader.load_csv_file(self.file_name)
         logger.info("Data successfully loaded.")
         station_list = self.file_reader.data
         locations = station_list.iloc[:, [4, 5]].values
-        station_name = station_list.iloc[:, [0]].values
-        self.plotter.add_traffic_station_marker(locations=locations, station_names=station_name)
+        # station_name = station_list.iloc[:, [0]].values
+        self.plotter.add_traffic_station_marker(locations=locations)
         self.plotter.generate_map(self.output_file_name)
 
 
