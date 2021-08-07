@@ -7,21 +7,19 @@ import vincent
 from folium.plugins import MeasureControl, HeatMap, TimestampedGeoJson
 from folium import Map, GeoJson, Popup, Marker, Tooltip, CustomIcon, CircleMarker, Vega, LayerControl
 
+import settings
 
 logger = logging.getLogger(__name__)
 
 
 class Plotter:
     """Plotter class."""
-    MADRID_LOCATION = (40.4167598, -3.7040395)
-    INITIAL_ZOOM = 13
-
     def __init__(
             self,
-            location: Tuple[float, float] = MADRID_LOCATION,
-            zoom: int = INITIAL_ZOOM
+            location: Tuple[float, float] = settings.MADRID_LOCATION,
+            map_zoom: int = settings.INITIAL_ZOOM
     ) -> None:
-        self.zoom = zoom
+        self._map_zoom = map_zoom
         self._location = location
         self.map = self._initialize_map()
         self._maps_path = './mc_map_generator/resources/images/maps/'
@@ -38,14 +36,14 @@ class Plotter:
             self._location = value
 
     @property
-    def zoom(self):
-        """Get the initial zoom of the map."""
+    def _map_zoom(self):
+        """Get the zoom of the map."""
         return self._zoom
 
-    @zoom.setter
-    def zoom(self, value):
+    @_map_zoom.setter
+    def _map_zoom(self, value):
         """Set the initial zoom of the map."""
-        if 1 < value < 17:
+        if 1 <= value < 17 and isinstance(value, int):
             self._zoom = value
         else:
             raise ValueError('Please use a zoom value between 1 - 16')
@@ -61,37 +59,22 @@ class Plotter:
             self._map = value
 
         else:
-            raise ValueError('The value must be an d instance of the class folium.Map()')
+            logger.error('The value must be an folium.Map instance')
+            raise ValueError('The value must be an folium.Map instance')
 
     def _initialize_map(self) -> "Map":
         """Initializes an empty map with Madrid Central's regions on it"""
         m = Map(
             location=self.location,
             tiles='OpenStreetMap',
-            zoom_start=self.zoom
+            zoom_start=self._map_zoom
         )
 
         gj = GeoJson(data={
             "type": "Feature",
             "geometry": {
                 "type": "Polygon",
-                "coordinates": [[
-                    [-3.711305, 40.406807],
-                    [-3.702612, 40.404997],
-                    [-3.693235, 40.407742],
-                    [-3.692248, 40.409000],
-                    [-3.694617, 40.415505],
-                    [-3.690392, 40.424887],
-                    [-3.696207, 40.427856],
-                    [-3.702162, 40.429122],
-                    [-3.705810, 40.429681],
-                    [-3.714018, 40.430404],
-                    [-3.715059, 40.428918],
-                    [-3.711797, 40.424377],
-                    [-3.714372, 40.422988],
-                    [-3.712870, 40.421534],
-                    [-3.714029, 40.410539]
-                ]]
+                "coordinates": settings.MADRID_CENTRAL_COORDINATES
             }
         }, name="Madrid Central")
 
@@ -100,29 +83,46 @@ class Plotter:
         return m
 
     def add_station_marker(self, locations, station_names=None, legend=None, **kwargs):
-        """Add air stations to the map. Add as many as the the lenght of the locatios parameter"""
+        """Add markerts to the map. Add as many as the length of the locations parameter.
+
+        Args:
+            locations: A list containing coordinates as list pairs [[lat1, lon1], [lat2, lon2], ...]
+            station_names: Name to be rendered for each location. Must be the same size as locations
+            legend: pending
+
+        Returns:
+            None
+        """
         if station_names is None:
             station_names = [[i] for i in range(len(locations))]
 
         for location, stat_name in zip(locations, station_names):
             try:
-                Marker(location=location,
-                              tooltip=Tooltip(
-                                  f'Estación: {stat_name[0]}<br>Latitud: {round(location[0], 4)}<br>Longitud: {round(location[1], 4)}'),
-                              popup=legend,
-                              icon=CustomIcon(icon_image='./mc_map_generator/resources/images/icons/forecast.png',
-                                                     icon_size=(40, 40))).add_to(self._map)
+                Marker(
+                    location=location,
+                    tooltip=Tooltip(
+                      f'Estación: {stat_name[0]}<br>Latitud: {round(location[0], 4)}<br>Longitud: {round(location[1], 4)}'
+                    ),
+                    popup=legend,
+                    icon=CustomIcon(
+                        icon_image='./mc_map_generator/resources/images/icons/forecast.png',
+                        icon_size=(40, 40)
+                    )
+                ).add_to(self._map)
+
             except TypeError as e:
-                print("El parametro location debe ser un de la forma [lat, lon] ó (lat,lon)")
-                print('Probando con la siguiente estación...')
+                logger.error("Location must be a tuple (lat, lon)")
+                logger.info("Location skipped. Continue with the next one.")
                 continue
 
             except FileNotFoundError as e:
-                print('El archivo para representar las estaciones no se encuentra en la carpeta "icons"')
+                logger.error("FileNotFoundError: can't find the icon.")
                 break
 
             except Exception as e:
-                print(e)
+                logger.error("Unknown error while creating the circle marker: %s", e)
+                logger.info("Location skipped. Continue with the next one.")
+                continue
 
     def add_traffic_station_marker(
         self,
@@ -164,8 +164,12 @@ class Plotter:
                 logger.info("Location skipped. Continue with the next one.")
                 continue
 
+            except FileNotFoundError as e:
+                logger.error("FileNotFoundError: can't find the icon.")
+                break
+
             except Exception as e:
-                logger.error("Unknown error while creating the circle marker")
+                logger.error("Unknown error while creating the circle marker: %s", e)
                 logger.info("Location skipped. Continue with the next one.")
                 continue
 
