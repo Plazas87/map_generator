@@ -10,6 +10,9 @@ import settings
 app = typer.Typer()
 
 
+logger = logging.getLogger(__name__)
+
+
 def configure_log() -> None:
     with open(settings.LOGGING_FILE_NAME, 'r') as f:
         dict_conf = yaml.safe_load(f)
@@ -19,7 +22,6 @@ def configure_log() -> None:
 @app.command()
 def heat_map(file_name: str, output_file_name: str = 'heatmap_traffic_station_map') -> None:
     configure_log()
-    logger = logging.getLogger(__name__)
     mapper = Mapper(file_name=file_name, output_file_name=output_file_name)
     mapper.generate_heatmap()
 
@@ -27,7 +29,6 @@ def heat_map(file_name: str, output_file_name: str = 'heatmap_traffic_station_ma
 @app.command()
 def standard_map(file_name: str, output_file_name: str = 'traffic_station_map') -> None:
     configure_log()
-    logger = logging.getLogger(__name__)
     logger.info("Start")
     mapper = Mapper(file_name=file_name, output_file_name=output_file_name)
     logger.info("Mapper successfully created")
