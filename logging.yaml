@@ -9,7 +9,7 @@ handlers:
     formatter: default
     stream: ext://sys.stdout
 loggers:
-  mc_map_generator:
+  map_generator:
     level: INFO
     handlers: [console]
     propagate: no

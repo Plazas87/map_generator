@@ -1,5 +1,5 @@
 import pandas as pd
-from mc_map_generator.emuns import Encodings, Separators
+from map_generator.emuns import Encodings, Separators
 
 
 class FileReader:
@@ -9,7 +9,7 @@ class FileReader:
         self._encoding = Encodings._value2member_map_.keys()
         self._data = []
         self._file_name = ''
-        self._data_path = './mc_map_generator/resources/data/'
+        self._data_path = './resources/data/'
 
     @property
     def file_name(self):
