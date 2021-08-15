@@ -40,7 +40,8 @@ class Mapper:
         for location in locations:
             self.map.add_marker(
                 location=tuple(location),
-                icon_file_name="forecast.png"
+                icon_file_name="forecast.png",
+                tooltip_text="Estación de medición de Calidad del Aire"
             )
 
         # self.plotter.add_traffic_station_marker(locations=locations)
