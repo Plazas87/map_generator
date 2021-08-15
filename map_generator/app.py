@@ -1,4 +1,4 @@
-from .mappers import MapPlotter
+from .mappers import MapBuilder
 from .readers import FileReader
 import logging
 
@@ -6,12 +6,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class Mapper:
+class MapPlotter:
     def __init__(self, file_name: str, output_file_name: str) -> None:
         self.file_name = file_name
         self.output_file_name = output_file_name
         self.file_reader = FileReader()
-        self.map = MapPlotter()
+        self.map_builder = MapBuilder()
 
     def generate_heatmap(self) -> None:
         # reader.read_csv_file('Station_list.csv')
@@ -23,11 +23,11 @@ class Mapper:
         locations = data.iloc[:, [4, 5]].values
 
         # Build the map
-        self.map.add_traffic_heatmap(locations=locations)
-        self.map.generate_map(self.output_file_name)
+        self.map_builder.add_traffic_heatmap(locations=locations)
+        self.map_builder.save_map(self.output_file_name)
 
-    def generate_standard_map(self) -> None:
-        self.map.initialize_map()
+    def generate_example_map(self) -> None:
+        self.map_builder.initialize_map()
 
         logger.info("Loading data...")
         self.file_reader.load_csv_file(self.file_name)
@@ -39,15 +39,16 @@ class Mapper:
 
         logger.info("Start adding markers...")
         for location in locations:
-            self.map.add_marker(
+            self.map_builder.add_marker(
                 location=tuple(location),
                 icon_file_name="forecast.png",
-                tooltip_text="Estación de medición de Calidad del Aire"
             )
 
         logger.info("Markers successfully added.")
 
-        # self.plotter.add_traffic_station_marker(locations=locations)
-        self.map.generate_map(self.output_file_name)
+        self.map_builder.add_layer_control()\
+            .add_measure_control()
+
+        self.map_builder.save_map(self.output_file_name)
 
 

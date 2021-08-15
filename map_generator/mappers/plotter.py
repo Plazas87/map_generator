@@ -9,15 +9,15 @@ import settings
 logger = logging.getLogger(__name__)
 
 
-class MapPlotter:
-    """Plotter class."""
+class MapBuilder:
+    """MapBuilder class."""
     def __init__(
             self,
             location: Tuple[float, float] = settings.DEFAULT_INITIAL_LOCATION,
             map_zoom: int = settings.DEFAULT_ZOOM,
             output_path: str = settings.DEFAULT_OUTPUT_PATH
     ) -> None:
-        self._map = None
+        self._map: "Map"
         self._map_zoom = map_zoom
         self._location = location
         self._output_path = output_path
@@ -85,7 +85,7 @@ class MapPlotter:
 
         return tooltip
 
-    def initialize_map(self) -> "Map":
+    def initialize_map(self) -> "MapBuilder":
         """Initializes an empty map using an initial location"""
         self._map = Map(
             location=self.location,
@@ -93,13 +93,13 @@ class MapPlotter:
             zoom_start=self._map_zoom
         )
 
-        return self._map
+        return self
 
     def add_polygon(
         self,
         polygon_corrdinates,
         popup_text: Optional[str] = None, popup_maxwith: Optional[int] = None
-    ) -> "Map":
+    ) -> "MapBuilder":
         """Add a polygon to an existing map."""
         polygon = settings.DEFAULT_POLYGON_COORDINATES
 
@@ -120,7 +120,7 @@ class MapPlotter:
 
         gj.add_to(self._map)
 
-        return self._map
+        return self
 
     def add_marker(
         self, *,
@@ -129,7 +129,7 @@ class MapPlotter:
         tooltip_text: Optional[str] = None,
         icon_file_name: Optional[str] = None,
         icon_size: Optional[Tuple[int, int]] = None,
-    ) -> "Map":
+    ) -> "MapBuilder":
         """Add a marker to and existing map.
 
         Args:
@@ -171,7 +171,20 @@ class MapPlotter:
         except Exception as e:
             logger.error("Unknown error while creating the marker: %s", e)
 
-        return self._map
+        return self
+
+    def add_layer_control(self) -> "MapBuilder":
+        """Add a LayerControl to the map."""
+        layer_control = LayerControl().add_to(self._map)
+        layer_control.add_to(self._map)
+        return self
+
+    def add_measure_control(self) -> "MapBuilder":
+        """Add MeasureControl to the map."""
+        measure_control = MeasureControl()
+        self._map.add_child(measure_control)
+
+        return self
 
     def add_traffic_station_marker(
         self,
@@ -229,16 +242,16 @@ class MapPlotter:
                            gradient={0.4: 'blue', 0.8: 'lime', 1: 'red'})
         heat_map.add_to(self._map)
 
-    def generate_map(self, file_name) -> None:
+    def save_map(self, file_name) -> None:
         """Save the map as .hmtl using a given name"""
-        # TODO: refactor LayerControl to a specific method
-        LayerControl().add_to(self._map)
-        self._map.add_child(MeasureControl())
+        # Build the map's output path
         output_filename = self._output_path + file_name + '.html'
-        logger.info("Saving the map in: %s.", output_filename)
+
+        logger.info("Saving the map...")
         self._map.save(output_filename)
+        logger.info("Saved in: %s.", output_filename)
 
 
 if __name__ == "__main__":
-    madrid_map = MapPlotter()
-    madrid_map.generate_map("test")
+    madrid_map = MapBuilder()
+    madrid_map.save_map("test")

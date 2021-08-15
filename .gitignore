@@ -141,8 +141,5 @@ cython_debug/
 *.idea
 
 # Generated maps
-mc_map_generator/resources
-
-# Generated maps
-generated_maps
+map_generator/resources
 

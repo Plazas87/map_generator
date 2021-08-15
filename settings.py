@@ -6,7 +6,7 @@ LOGGING_FILE_NAME = "logging.yaml"
 DEFAULT_INITIAL_LOCATION = (40.4167598, -3.7040395)
 DEFAULT_ZOOM = 13
 DEFAULT_OUTPUT_PATH = './generated_maps/'
-CUSTOM_ICONS_PATH = './mc_map_generator/resources/images/icons/'
+CUSTOM_ICONS_PATH = './resources/images/icons/'
 DEFAULT_POLYGON_COORDINATES = [[
     [-3.711305, 40.406807],
     [-3.702612, 40.404997],
