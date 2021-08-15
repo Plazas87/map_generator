@@ -37,12 +37,15 @@ class Mapper:
         locations = station_list.iloc[:, [25, 24]].values
         # station_name = station_list.iloc[:, [0]].values
 
+        logger.info("Start adding markers...")
         for location in locations:
             self.map.add_marker(
                 location=tuple(location),
                 icon_file_name="forecast.png",
                 tooltip_text="Estación de medición de Calidad del Aire"
             )
+
+        logger.info("Markers successfully added.")
 
         # self.plotter.add_traffic_station_marker(locations=locations)
         self.map.generate_map(self.output_file_name)

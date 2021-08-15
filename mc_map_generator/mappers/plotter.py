@@ -61,20 +61,29 @@ class MapPlotter:
             raise ValueError('The value must be an folium.Map instance')
 
     def _create_popup(self, text: str, max_with: int = 900) -> "Popup":
-        return Popup(text, max_width=max_with)
+        popup = Popup(text, max_width=max_with)
+        logger.debug("Complete")
+
+        return popup
 
     def _create_custom_icon(self, icon_file_name: str, icon_size: Optional[Tuple[int, int]]):
         size = (40, 40)
         if icon_size:
             size = icon_size
 
-        return CustomIcon(
+        custom_icon = CustomIcon(
             icon_image=settings.CUSTOM_ICONS_PATH + icon_file_name,
             icon_size=size
         )
+        logger.debug("Complete")
+
+        return custom_icon
 
     def _create_tooltip(self, tooltip_text) -> "Tooltip":
-        return Tooltip(tooltip_text)
+        tooltip = Tooltip(tooltip_text)
+        logger.debug("Complete")
+
+        return tooltip
 
     def initialize_map(self) -> "Map":
         """Initializes an empty map using an initial location"""
@@ -136,15 +145,18 @@ class MapPlotter:
 
         try:
             # Create a Standard Marker with a name to render
+            logger.debug("Creating the marker...")
             marker = Marker(location=location, popup=legend)
 
             # If there is a custom icon, add it to the market
             if icon_file_name is not None:
+                logger.debug("Adding a custom icon to the marker...")
                 icon = self._create_custom_icon(icon_file_name=icon_file_name, icon_size=icon_size)
                 marker.add_child(icon)
 
             # If a tooltip is passed then add it to the marker
             if tooltip_text is not None:
+                logger.debug("Adding a tooltip to the marker...")
                 tooltip = self._create_tooltip(tooltip_text=tooltip_text)
                 marker.add_child(tooltip)
 
@@ -219,9 +231,12 @@ class MapPlotter:
 
     def generate_map(self, file_name) -> None:
         """Save the map as .hmtl using a given name"""
+        # TODO: refactor LayerControl to a specific method
         LayerControl().add_to(self._map)
         self._map.add_child(MeasureControl())
-        self.map.save(self._output_path + file_name + '.html')
+        output_filename = self._output_path + file_name + '.html'
+        logger.info("Saving the map in: %s.", output_filename)
+        self._map.save(output_filename)
 
 
 if __name__ == "__main__":
