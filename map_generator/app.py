@@ -40,15 +40,11 @@ class MapPlotter:
         logger.info("Start adding markers...")
         for location in locations:
             self.map_builder.add_marker(
-                location=tuple(location),
-                icon_file_name="forecast.png",
+                location=tuple(location), icon_file_name="forecast.png"
             )
 
         logger.info("Markers successfully added.")
 
-        self.map_builder.add_layer_control()\
-            .add_measure_control()
+        self.map_builder.add_layer_control().add_measure_control()
 
         self.map_builder.save_map(self.output_file_name)
-
-
