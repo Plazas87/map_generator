@@ -1,1 +1,1 @@
-from .plotter import MapBuilder
+from .plotter import MapBuilder  # noqa F401

@@ -1,1 +1,1 @@
-from .fileReader import FileReader
+from .fileReader import FileReader  # noqa F401

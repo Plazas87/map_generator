@@ -215,8 +215,8 @@ class MapBuilder:
         Create circle marker for each location.
 
         Args:
-            locations: A list containing coordinates as list pairs [[lat1, lon1], [lat2, lon2], ...]
-            station_names: Name to be rendered for each location. Must be the same size as locations
+            locations: A list containing coordinates as list pairs [[lat1, lon1], ...]
+            station_names: Name to be rendered for each location.
             legend: pending
 
         Returns:
@@ -229,7 +229,9 @@ class MapBuilder:
         for location, stat_name in zip(locations, station_names):
             try:
                 tooltip_instance = Tooltip(
-                    f"Station: {stat_name[0]}<br>Lat: {round(location[0], 4)}<br>Lon: {round(location[1], 4)}"
+                    f"Station: {stat_name[0]}"
+                    f"<br>Lat: {round(location[0], 4)}"
+                    f"<br>Lon: {round(location[1], 4)}"
                 )
 
                 CircleMarker(
@@ -240,12 +242,12 @@ class MapBuilder:
                     color="red",
                 ).add_to(self._map)
 
-            except TypeError as e:
+            except TypeError:
                 logger.error("Location must be a tuple (lat, lon)")
                 logger.info("Location skipped. Continue with the next one.")
                 continue
 
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 logger.error("FileNotFoundError: can't find the icon.")
                 break
 

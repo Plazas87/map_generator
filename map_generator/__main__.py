@@ -1,5 +1,4 @@
 import logging.config
-from typing import Dict, Any
 
 from .app import MapPlotter
 import typer
@@ -36,8 +35,8 @@ def example_map(
     ),
     output_file_name: str = typer.Option(
         "madrid_air_quality_stations",
-        help="Filename for the resulting Map: 'generated_map_name'. Avoid adding the file extension at the end, "
-        "by default the resulting Map is an '*.html' file.",
+        help="Filename for the resulting Map: 'generated_map_name'. Avoid adding the file "
+        "extension at the end, by default the resulting Map is an '*.html' file.",
     ),
 ) -> None:
     logger.info("Starting...")
