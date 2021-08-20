@@ -30,11 +30,16 @@ def heat_map(
 
 @app.command()
 def example_map(
+    columns: str = typer.Argument(
+        help="CSV column numbers as a list, for example: [3, 5, 6]. You must pay special "
+        "attention to the order fo this list. Make sure you keep the following "
+        "order: [lat, long, legend, tooltip]"
+    ),
     file_name: str = typer.Option(
         "madrid_air_quality_stations.csv", help="CSV filename to Plot: 'file_name.csv'"
     ),
     output_file_name: str = typer.Option(
-        "madrid_air_quality_stations",
+        "example_map",
         help="Filename for the resulting Map: 'generated_map_name'. Avoid adding the file "
         "extension at the end, by default the resulting Map is an '*.html' file.",
     ),

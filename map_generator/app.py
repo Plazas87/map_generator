@@ -1,3 +1,5 @@
+from typing import List
+
 from .mappers import MapBuilder
 from .readers import FileReader
 import logging
@@ -7,7 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class MapPlotter:
-    def __init__(self, file_name: str, output_file_name: str) -> None:
+    def __init__(
+        self, columns_list: List[int], file_name: str, output_file_name: str
+    ) -> None:
+        self._columns_list = columns_list
         self.file_name = file_name
         self.output_file_name = output_file_name
         self.file_reader = FileReader()
@@ -35,7 +40,6 @@ class MapPlotter:
 
         station_list = self.file_reader.data
         locations = station_list.iloc[:, [25, 24]].values
-        # station_name = station_list.iloc[:, [0]].values
 
         logger.info("Start adding markers...")
         for location in locations:

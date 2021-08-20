@@ -27,7 +27,7 @@ class MapBuilder:
         map_zoom: int = settings.DEFAULT_ZOOM,
         output_path: str = settings.DEFAULT_OUTPUT_PATH,
     ) -> None:
-        self._map: "Map"
+        self._map = None
         self._map_zoom = map_zoom
         self._location = location
         self._output_path = output_path
