@@ -1,5 +1,7 @@
-from typing import List
+from collections import namedtuple
+from typing import Dict
 
+import settings
 from .mappers import MapBuilder
 from .readers import FileReader
 import logging
@@ -10,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 class MapPlotter:
     def __init__(
-        self, columns_list: List[int], file_name: str, output_file_name: str
+        self, columns_dict: Dict[str, int], file_name: str, output_file_name: str
     ) -> None:
-        self._columns_list = columns_list
+        self._columns_dict = columns_dict
         self.file_name = file_name
         self.output_file_name = output_file_name
         self.file_reader = FileReader()
@@ -39,12 +41,28 @@ class MapPlotter:
         logger.info("Data successfully loaded.")
 
         station_list = self.file_reader.data
-        locations = station_list.iloc[:, [25, 24]].values
+        rows = station_list.iloc[:, list(self._columns_dict.values())].values
 
         logger.info("Start adding markers...")
-        for location in locations:
+
+        for row in rows:
+            dict_row = {
+                field_name: row_field
+                for row_field, field_name in zip(row, self._columns_dict.keys())
+            }
+
+            ColumnNames = namedtuple("ColumnNames", settings.DEFAULT_COLUMN_DICT_ORDER)
+            columns = ColumnNames(*settings.DEFAULT_COLUMN_DICT_ORDER)
+
+            # TODO: change this to create the indexes dynamically based on the settings module.
+            coordinates = (dict_row[columns.lat], dict_row[columns.lon])
+
             self.map_builder.add_marker(
-                location=tuple(location), icon_file_name="forecast.png"
+                coordinates=coordinates,
+                legend=dict_row.get(columns.legend),
+                tooltip_text=dict_row.get(columns.tooltip),
+                icon_file_name=settings.DEFAULT_ICON_NAME,
+                icon_size=settings.DEFAULT_CUSTOM_ICON_SIZE,
             )
 
         logger.info("Markers successfully added.")

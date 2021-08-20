@@ -141,7 +141,7 @@ class MapBuilder:
     def add_marker(
         self,
         *,
-        location: Tuple[int, int],
+        coordinates: Tuple[int, int],
         legend: Optional[str] = None,
         tooltip_text: Optional[str] = None,
         icon_file_name: Optional[str] = None,
@@ -150,7 +150,7 @@ class MapBuilder:
         """Add a marker to and existing map.
 
         Args:
-            location: A locations in the format (lat, lon).
+            coordinates: A locations in the format (lat, lon).
             legend: Message to be shown when the marker is clicked.
             tooltip_text: Message to be shown when the mouse pass over the marker.
             icon_file_name: file name of the custom icon to use, for example: 'cus_icon.png'.
@@ -163,7 +163,7 @@ class MapBuilder:
         try:
             # Create a Standard Marker with a name to render
             logger.debug("Creating the marker...")
-            marker = Marker(location=location, popup=legend)
+            marker = Marker(location=coordinates, popup=legend)
 
             # If there is a custom icon, add it to the market
             if icon_file_name is not None:
