@@ -1,4 +1,3 @@
-from collections import namedtuple
 from typing import Dict
 
 import settings
@@ -51,16 +50,12 @@ class MapPlotter:
                 for row_field, field_name in zip(row, self._columns_dict.keys())
             }
 
-            ColumnNames = namedtuple("ColumnNames", settings.DEFAULT_COLUMN_DICT_ORDER)
-            columns = ColumnNames(*settings.DEFAULT_COLUMN_DICT_ORDER)
-
-            # TODO: change this to create the indexes dynamically based on the settings module.
-            coordinates = (dict_row[columns.lat], dict_row[columns.lon])
+            coordinates = (dict_row[settings.LATITUDE], dict_row[settings.LONGITUDE])
 
             self.map_builder.add_marker(
                 coordinates=coordinates,
-                legend=dict_row.get(columns.legend),
-                tooltip_text=dict_row.get(columns.tooltip),
+                legend=dict_row.get(settings.LEGEND),
+                tooltip_text=dict_row.get(settings.TOOLTIP),
                 icon_file_name=settings.DEFAULT_ICON_NAME,
                 icon_size=settings.DEFAULT_CUSTOM_ICON_SIZE,
             )

@@ -5,7 +5,11 @@ LOGGING_FILE_NAME = "logging.yaml"
 DEFAULT_INITIAL_LOCATION = (40.4167598, -3.7040395)
 DEFAULT_ZOOM = 13
 DEFAULT_OUTPUT_PATH = "./generated_maps/"
-DEFAULT_COLUMN_DICT_ORDER = {"lat": 0, "lon": 1, "legend": 2, "tooltip": 3}
+LATITUDE = "lat"
+LONGITUDE = "lon"
+LEGEND = "legend"
+TOOLTIP = "tooltip"
+DEFAULT_COLUMN_DICT_ORDER = {LATITUDE: 0, LONGITUDE: 1, LEGEND: 2, TOOLTIP: 3}
 
 # Coordinates below draw a polygon over Madrid Central area
 DEFAULT_POLYGON_COORDINATES = [
