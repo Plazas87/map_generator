@@ -22,15 +22,6 @@ logger = logging.getLogger(__name__)
 
 
 @app.command()
-def heat_map(
-    file_name: str, output_file_name: str = "heatmap_traffic_station_map"
-) -> None:
-    configure_log()
-    map_plotter = MapPlotter(file_name=file_name, output_file_name=output_file_name)
-    map_plotter.generate_heatmap()
-
-
-@app.command()
 def example_map(
     columns: str = typer.Argument(
         ...,

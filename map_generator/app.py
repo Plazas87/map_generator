@@ -29,19 +29,6 @@ class MapPlotter:
         self.output_file_name = output_file_name
         self.map_builder = FoliumMapBuilder()
 
-    def generate_heatmap(self) -> None:
-        # reader.read_csv_file('Station_list.csv')
-
-        # Load the data
-        data = self.file_reader.load_csv_file(self.file_name)
-
-        # Get the only de data related to the location o the station
-        locations = data.iloc[:, [4, 5]].values
-
-        # Build the map
-        self.map_builder.add_traffic_heatmap(locations=locations)
-        self.map_builder.save_map(self.output_file_name)
-
     def generate_example_map(self) -> None:
         # Create an empty map
         self.map_builder.initialize_map()
