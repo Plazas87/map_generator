@@ -18,8 +18,8 @@ import settings
 logger = logging.getLogger(__name__)
 
 
-class MapBuilder:
-    """MapBuilder class."""
+class FoliumMapBuilder:
+    """FoliumMapBuilder class."""
 
     def __init__(
         self,
@@ -102,7 +102,7 @@ class MapBuilder:
 
         return tooltip
 
-    def initialize_map(self) -> "MapBuilder":
+    def initialize_map(self) -> "FoliumMapBuilder":
         """Initializes an empty map using an initial location"""
         self._map = Map(
             location=self.location, tiles="OpenStreetMap", zoom_start=self._map_zoom
@@ -115,7 +115,7 @@ class MapBuilder:
         polygon_corrdinates,
         popup_text: Optional[str] = None,
         popup_maxwith: Optional[int] = None,
-    ) -> "MapBuilder":
+    ) -> "FoliumMapBuilder":
         """Add a polygon to an existing map."""
         polygon = settings.DEFAULT_POLYGON_COORDINATES
 
@@ -146,7 +146,7 @@ class MapBuilder:
         tooltip_text: Optional[str] = None,
         icon_file_name: Optional[str] = None,
         icon_size: Optional[Tuple[int, int]] = None,
-    ) -> "MapBuilder":
+    ) -> "FoliumMapBuilder":
         """Add a marker to and existing map.
 
         Args:
@@ -192,13 +192,13 @@ class MapBuilder:
 
         return self
 
-    def add_layer_control(self) -> "MapBuilder":
+    def add_layer_control(self) -> "FoliumMapBuilder":
         """Add a LayerControl to the map."""
         layer_control = LayerControl().add_to(self._map)
         layer_control.add_to(self._map)
         return self
 
-    def add_measure_control(self) -> "MapBuilder":
+    def add_measure_control(self) -> "FoliumMapBuilder":
         """Add MeasureControl to the map."""
         measure_control = MeasureControl()
         self._map.add_child(measure_control)
@@ -279,5 +279,5 @@ class MapBuilder:
 
 
 if __name__ == "__main__":
-    madrid_map = MapBuilder()
+    madrid_map = FoliumMapBuilder()
     madrid_map.save_map("test")

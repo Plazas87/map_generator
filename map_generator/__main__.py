@@ -1,11 +1,12 @@
 import logging.config
-import re
+import sys
 
 from .app import MapPlotter
 import typer
 import yaml
 import settings
-
+from .readers import FileReader
+from .utils import parse_columns
 
 app = typer.Typer()
 
@@ -49,18 +50,17 @@ def example_map(
     logger.info("Starting...")
 
     try:
-        columns = re.sub(r"([\[ \]])", "", columns).split(",")
-        columns_dict = {
-            column_name: int(column)
-            for column, column_name in zip(
-                columns, settings.DEFAULT_COLUMN_DICT_ORDER.keys()
-            )
-        }
-
+        columns_dict = parse_columns(columns)
     except Exception as e:
         logger.error("Error while parsing the column numbers: %s", e)
+        sys.exit(1)
+
+    logger.info("Loading data...")
+    file_reader = FileReader()
+    data = file_reader.load_csv_file(file_name)
 
     map_plotter = MapPlotter(
+        data=data,
         columns_dict=columns_dict,
         file_name=file_name,
         output_file_name=output_file_name,

@@ -52,6 +52,7 @@ class FileReader:
             raise ValueError("Try to set data path with no str value")
 
     def load_csv_file(self, file_name, separator=None):
+        tmp = None
         path = self._data_path + file_name
         if separator is None:
             tmp = []
@@ -74,9 +75,8 @@ class FileReader:
                         except Exception as e:
                             print(f"Can´t read : - {e}")
 
-            self._data = tmp
-
-            return tmp
+        self._data = tmp
+        return tmp
 
     def __str__(self):
         return (

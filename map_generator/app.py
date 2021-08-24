@@ -1,9 +1,11 @@
-from typing import Dict
+from typing import Dict, Tuple, Optional, TYPE_CHECKING
 
 import settings
-from .mappers import MapBuilder
-from .readers import FileReader
+from .mappers import FoliumMapBuilder
 import logging
+
+if TYPE_CHECKING:
+    from pandas.core.frame import DataFrame
 
 
 logger = logging.getLogger(__name__)
@@ -11,13 +13,21 @@ logger = logging.getLogger(__name__)
 
 class MapPlotter:
     def __init__(
-        self, columns_dict: Dict[str, int], file_name: str, output_file_name: str
+        self,
+        data: "DataFrame",
+        columns_dict: Dict[str, int],
+        file_name: str,
+        output_file_name: str,
+        icon_filename: Optional[str] = None,
+        icon_size: Optional[Tuple[int, int]] = None,
     ) -> None:
+        self._data = data
         self._columns_dict = columns_dict
         self.file_name = file_name
+        self._icon_filename = icon_filename
+        self._icon_size = icon_size
         self.output_file_name = output_file_name
-        self.file_reader = FileReader()
-        self.map_builder = MapBuilder()
+        self.map_builder = FoliumMapBuilder()
 
     def generate_heatmap(self) -> None:
         # reader.read_csv_file('Station_list.csv')
@@ -33,14 +43,10 @@ class MapPlotter:
         self.map_builder.save_map(self.output_file_name)
 
     def generate_example_map(self) -> None:
+        # Create an empty map
         self.map_builder.initialize_map()
 
-        logger.info("Loading data...")
-        self.file_reader.load_csv_file(self.file_name)
-        logger.info("Data successfully loaded.")
-
-        station_list = self.file_reader.data
-        rows = station_list.iloc[:, list(self._columns_dict.values())].values
+        rows = self._data.iloc[:, list(self._columns_dict.values())].values
 
         logger.info("Start adding markers...")
 
@@ -56,8 +62,8 @@ class MapPlotter:
                 coordinates=coordinates,
                 legend=dict_row.get(settings.LEGEND),
                 tooltip_text=dict_row.get(settings.TOOLTIP),
-                icon_file_name=settings.DEFAULT_ICON_NAME,
-                icon_size=settings.DEFAULT_CUSTOM_ICON_SIZE,
+                icon_file_name=self._icon_filename,
+                icon_size=self._icon_size,
             )
 
         logger.info("Markers successfully added.")
