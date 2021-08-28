@@ -1,11 +1,15 @@
 # LOGGER
 LOGGING_FILE_NAME = "logging.yaml"
 
-
 # MAPS CONFIG
 DEFAULT_INITIAL_LOCATION = (40.4167598, -3.7040395)
 DEFAULT_ZOOM = 13
 DEFAULT_OUTPUT_PATH = "./generated_maps/"
+LATITUDE = "lat"
+LONGITUDE = "lon"
+LEGEND = "legend"
+TOOLTIP = "tooltip"
+DEFAULT_COLUMN_DICT_ORDER = {LATITUDE: 0, LONGITUDE: 1, LEGEND: 2, TOOLTIP: 3}
 
 # Coordinates below draw a polygon over Madrid Central area
 DEFAULT_POLYGON_COORDINATES = [
@@ -30,4 +34,5 @@ DEFAULT_POLYGON_COORDINATES = [
 
 # CUSTOM ICONS
 DEFAULT_CUSTOM_ICONS_PATH = "./resources/images/icons/"
+DEFAULT_ICON_NAME = "forecast.png"
 DEFAULT_CUSTOM_ICON_SIZE = (40, 40)

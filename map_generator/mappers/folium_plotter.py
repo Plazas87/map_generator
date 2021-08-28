@@ -18,8 +18,8 @@ import settings
 logger = logging.getLogger(__name__)
 
 
-class MapBuilder:
-    """MapBuilder class."""
+class FoliumMapBuilder:
+    """FoliumMapBuilder class."""
 
     def __init__(
         self,
@@ -27,7 +27,7 @@ class MapBuilder:
         map_zoom: int = settings.DEFAULT_ZOOM,
         output_path: str = settings.DEFAULT_OUTPUT_PATH,
     ) -> None:
-        self._map: "Map"
+        self._map = None
         self._map_zoom = map_zoom
         self._location = location
         self._output_path = output_path
@@ -42,6 +42,7 @@ class MapBuilder:
         """Set the location."""
         if (
             len(value) == 2
+            and isinstance(value, tuple)
             and isinstance(value[0], float)
             and isinstance(value[1], float)
         ):
@@ -102,7 +103,7 @@ class MapBuilder:
 
         return tooltip
 
-    def initialize_map(self) -> "MapBuilder":
+    def initialize_map(self) -> "FoliumMapBuilder":
         """Initializes an empty map using an initial location"""
         self._map = Map(
             location=self.location, tiles="OpenStreetMap", zoom_start=self._map_zoom
@@ -112,15 +113,15 @@ class MapBuilder:
 
     def add_polygon(
         self,
-        polygon_corrdinates,
+        polygon_coordinates,
         popup_text: Optional[str] = None,
         popup_maxwith: Optional[int] = None,
-    ) -> "MapBuilder":
+    ) -> "FoliumMapBuilder":
         """Add a polygon to an existing map."""
         polygon = settings.DEFAULT_POLYGON_COORDINATES
 
-        if polygon_corrdinates:
-            polygon = polygon_corrdinates
+        if polygon_coordinates:
+            polygon = polygon_coordinates
 
         gj = GeoJson(
             data={
@@ -141,16 +142,16 @@ class MapBuilder:
     def add_marker(
         self,
         *,
-        location: Tuple[int, int],
+        coordinates: Tuple[int, int],
         legend: Optional[str] = None,
         tooltip_text: Optional[str] = None,
         icon_file_name: Optional[str] = None,
         icon_size: Optional[Tuple[int, int]] = None,
-    ) -> "MapBuilder":
+    ) -> "FoliumMapBuilder":
         """Add a marker to and existing map.
 
         Args:
-            location: A locations in the format (lat, lon).
+            coordinates: A location in the format (lat, lon).
             legend: Message to be shown when the marker is clicked.
             tooltip_text: Message to be shown when the mouse pass over the marker.
             icon_file_name: file name of the custom icon to use, for example: 'cus_icon.png'.
@@ -163,7 +164,7 @@ class MapBuilder:
         try:
             # Create a Standard Marker with a name to render
             logger.debug("Creating the marker...")
-            marker = Marker(location=location, popup=legend)
+            marker = Marker(location=coordinates, popup=legend)
 
             # If there is a custom icon, add it to the market
             if icon_file_name is not None:
@@ -192,13 +193,13 @@ class MapBuilder:
 
         return self
 
-    def add_layer_control(self) -> "MapBuilder":
+    def add_layer_control(self) -> "FoliumMapBuilder":
         """Add a LayerControl to the map."""
         layer_control = LayerControl().add_to(self._map)
         layer_control.add_to(self._map)
         return self
 
-    def add_measure_control(self) -> "MapBuilder":
+    def add_measure_control(self) -> "FoliumMapBuilder":
         """Add MeasureControl to the map."""
         measure_control = MeasureControl()
         self._map.add_child(measure_control)
@@ -279,5 +280,5 @@ class MapBuilder:
 
 
 if __name__ == "__main__":
-    madrid_map = MapBuilder()
+    madrid_map = FoliumMapBuilder()
     madrid_map.save_map("test")
