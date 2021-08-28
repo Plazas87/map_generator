@@ -61,6 +61,7 @@ class FileReader:
             file_name: The name of the file.
             separator: the separator used in the file.
             encoding: encoding type used to successfully read text in the file.
+            header: value to indicate if the csv file has column names or not. Default: 'infer'
 
         Returns:
             A DataFrame if the combination of parameters allow to perform the

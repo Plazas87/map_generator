@@ -59,5 +59,8 @@ def example_map(
         )
         map_plotter.generate_example_map()
 
+    else:
+        logger.info("The file can't be loaded and the map can't be generated.")
+
 
 app()
