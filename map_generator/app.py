@@ -1,8 +1,9 @@
-from typing import Dict, Tuple, Optional, TYPE_CHECKING
+import logging
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 import settings
+
 from .mappers import FoliumMapBuilder
-import logging
 
 if TYPE_CHECKING:
     from pandas.core.frame import DataFrame

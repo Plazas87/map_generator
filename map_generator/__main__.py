@@ -1,10 +1,11 @@
 import logging.config
 import sys
 
-from .app import MapPlotter
+import settings
 import typer
 import yaml
-import settings
+
+from .app import MapPlotter
 from .readers import FileReader
 from .utils import parse_columns
 

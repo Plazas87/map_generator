@@ -1,10 +1,8 @@
 import logging
-from typing import TYPE_CHECKING, Optional, Tuple, Dict
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 import pandas as pd
-
 import settings
-
 
 if TYPE_CHECKING:
     from pandas.core.frame import DataFrame

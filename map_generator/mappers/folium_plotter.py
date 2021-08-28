@@ -1,19 +1,18 @@
 import logging
-from typing import Tuple, List, Optional
-
-from folium.plugins import MeasureControl, HeatMap
-from folium import (
-    Map,
-    GeoJson,
-    Popup,
-    Marker,
-    Tooltip,
-    CustomIcon,
-    CircleMarker,
-    LayerControl,
-)
+from typing import List, Optional, Tuple
 
 import settings
+from folium import (
+    CircleMarker,
+    CustomIcon,
+    GeoJson,
+    LayerControl,
+    Map,
+    Marker,
+    Popup,
+    Tooltip,
+)
+from folium.plugins import HeatMap, MeasureControl
 
 logger = logging.getLogger(__name__)
 
