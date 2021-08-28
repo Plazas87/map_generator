@@ -1,10 +1,11 @@
 import logging.config
 import sys
 
-from .app import MapPlotter
+import settings
 import typer
 import yaml
-import settings
+
+from .app import MapPlotter
 from .readers import FileReader
 from .utils import parse_columns
 
@@ -48,15 +49,19 @@ def example_map(
 
     logger.info("Loading data...")
     file_reader = FileReader()
-    data = file_reader.load_csv_file(file_name)
+    data = file_reader.load_csv_file(file_name=file_name)
 
-    map_plotter = MapPlotter(
-        data=data,
-        columns_dict=columns_dict,
-        file_name=file_name,
-        output_file_name=output_file_name,
-    )
-    map_plotter.generate_example_map()
+    if data:
+        map_plotter = MapPlotter(
+            data=data,
+            columns_dict=columns_dict,
+            file_name=file_name,
+            output_file_name=output_file_name,
+        )
+        map_plotter.generate_example_map()
+
+    else:
+        logger.info("The file can't be loaded and the map can't be generated.")
 
 
 app()

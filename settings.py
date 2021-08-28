@@ -36,3 +36,11 @@ DEFAULT_POLYGON_COORDINATES = [
 DEFAULT_CUSTOM_ICONS_PATH = "./resources/images/icons/"
 DEFAULT_ICON_NAME = "forecast.png"
 DEFAULT_CUSTOM_ICON_SIZE = (40, 40)
+
+# FILE READER
+FILE_SEPARATORS = {"csv": ",", "s-csv": ";"}
+FILE_ENCODINGS = ("iso-8859-1", "utf-8", "latin1")
+FILE_HEADER = "infer"
+
+# DATA RESOURCES
+DATA_RESOURCE = "./resources/data/"
