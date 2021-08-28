@@ -42,6 +42,7 @@ class FoliumMapBuilder:
         """Set the location."""
         if (
             len(value) == 2
+            and isinstance(value, tuple)
             and isinstance(value[0], float)
             and isinstance(value[1], float)
         ):
@@ -112,15 +113,15 @@ class FoliumMapBuilder:
 
     def add_polygon(
         self,
-        polygon_corrdinates,
+        polygon_coordinates,
         popup_text: Optional[str] = None,
         popup_maxwith: Optional[int] = None,
     ) -> "FoliumMapBuilder":
         """Add a polygon to an existing map."""
         polygon = settings.DEFAULT_POLYGON_COORDINATES
 
-        if polygon_corrdinates:
-            polygon = polygon_corrdinates
+        if polygon_coordinates:
+            polygon = polygon_coordinates
 
         gj = GeoJson(
             data={
@@ -150,7 +151,7 @@ class FoliumMapBuilder:
         """Add a marker to and existing map.
 
         Args:
-            coordinates: A locations in the format (lat, lon).
+            coordinates: A location in the format (lat, lon).
             legend: Message to be shown when the marker is clicked.
             tooltip_text: Message to be shown when the mouse pass over the marker.
             icon_file_name: file name of the custom icon to use, for example: 'cus_icon.png'.
