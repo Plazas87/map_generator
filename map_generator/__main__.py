@@ -48,15 +48,16 @@ def example_map(
 
     logger.info("Loading data...")
     file_reader = FileReader()
-    data = file_reader.load_csv_file(file_name)
+    data = file_reader.load_csv_file(file_name=file_name)
 
-    map_plotter = MapPlotter(
-        data=data,
-        columns_dict=columns_dict,
-        file_name=file_name,
-        output_file_name=output_file_name,
-    )
-    map_plotter.generate_example_map()
+    if data:
+        map_plotter = MapPlotter(
+            data=data,
+            columns_dict=columns_dict,
+            file_name=file_name,
+            output_file_name=output_file_name,
+        )
+        map_plotter.generate_example_map()
 
 
 app()
