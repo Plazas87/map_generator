@@ -51,7 +51,7 @@ def example_map(
     file_reader = FileReader()
     data = file_reader.load_csv_file(file_name=file_name)
 
-    if data:
+    if not data.empty:
         map_plotter = MapPlotter(
             data=data,
             columns_dict=columns_dict,
