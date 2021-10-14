@@ -1,1 +1,1 @@
-from .plotter import MapBuilder
+from .folium_plotter import FoliumMapBuilder  # noqa F401

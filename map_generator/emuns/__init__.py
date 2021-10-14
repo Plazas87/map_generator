@@ -1,1 +1,1 @@
-from .emuns import Extensions, Separators, Encodings
+from .emuns import Encodings, Extensions, Separators  # noqa F401
